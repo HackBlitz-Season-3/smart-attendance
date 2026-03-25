@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body" style="display: none;">
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="logo" />
+                    <span>Smart Attendance</span>
+                </div>
+                <button class="mobile-menu-close" id="menu-close">&times;</button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showSection('dashboardSection', this)">Dashboard</a>
+                <a href="#" class="nav-item" onclick="showSection('classesSection', this)">Classes</a>
+                <a href="#" class="nav-item" onclick="showSection('sessionsSection', this)">Sessions</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div style="margin-bottom: 1rem;">
+                    <p class="user-email" id="current-user-email" style="color: rgba(255,255,255,0.7); font-size: 0.8rem;">Loading...</p>
+                    <span class="badge badge-role" id="current-user-role" style="font-size: 0.7rem;">Role</span>
+                </div>
+                <button id="logout-btn" class="btn btn-block logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <button class="mobile-menu-btn" id="menu-toggle">☰</button>
+                <img src="assets/logo.png" class="top-logo" alt="logo" />
+                <div class="topbar-right">
+                    <button id="themeToggle" class="theme-btn">
+                        <img id="themeIcon" src="assets/sun.svg" alt="theme" width="24" height="24" />
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <!-- 1. DASHBOARD SECTION -->
+                <div id="dashboardSection">
+                    <div class="view-header">
+                        <div>
+                            <h1>Dashboard</h1>
+                            <p class="text-muted">Overview of your activity.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Teacher Dashboard -->
+                    <div id="teacher-dashboard" class="dashboard-grid" style="display: none;">
+                        <div class="card summary-card present-card">
+                            <div class="summary-icon">✅</div>
+                            <div class="summary-data">
+                                <h3>Total Present</h3>
+                                <p class="count" id="teacher-present-count">0</p>
+                            </div>
+                        </div>
+                        <div class="card summary-card suspicious-card">
+                            <div class="summary-icon">⚠️</div>
+                            <div class="summary-data">
+                                <h3>Suspicious Scans</h3>
+                                <p class="count" id="teacher-suspicious-count">0</p>
+                            </div>
+                        </div>
+                        <div class="card col-span-full alerts-panel">
+                            <div class="card-header">
+                                <h3>Recent Security Alerts</h3>
+                            </div>
+                            <div class="card-body" id="teacher-alerts">
+                                <p class="text-muted">No suspicious activity detected.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Dashboard -->
+                    <div id="student-dashboard" class="dashboard-grid" style="display: none;">
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>My Global Attendance Logs</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Class Code</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="student-attendance-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CLASSES SECTION -->
+                <div id="classesSection" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h1>Classes Management</h1>
+                            <p class="text-muted">Manage enrollments and created classes.</p>
+                        </div>
+                        <button id="create-class-btn" class="btn btn-primary" style="display: none;">+ Create Class</button>
+                    </div>
+
+                    <!-- Teacher Classes -->
+                    <div id="teacher-classes" class="dashboard-grid" style="display: none;">
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>My Managed Classes</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-4">Select a class to view its details, or use the upper right button to create a new one.</p>
+                                <select id="teacher-classes-select" class="form-input" style="max-width: 300px;">
+                                    <option value="" disabled selected>Loading classes...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Classes -->
+                    <div id="student-classes" class="dashboard-grid" style="display: none;">
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h3>Join a Class</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="join-class-form" class="inline-form">
+                                    <input type="text" id="class-code-input" placeholder="CODE" maxlength="4" required class="form-input code-input">
+                                    <button type="submit" class="btn btn-primary">Join</button>
+                                </form>
+                                <div id="join-error" class="error-message"></div>
+                            </div>
+                        </div>
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h3>Active Enrollments</h3>
+                            </div>
+                            <div class="card-body list-container" id="student-classes-list">
+                                <p class="text-muted">You haven't joined any classes yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SESSIONS SECTION -->
+                <div id="sessionsSection" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h1>Sessions</h1>
+                            <p class="text-muted">Active attendance tracking.</p>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Sessions -->
+                    <div id="teacher-sessions" class="dashboard-grid" style="display: none;">
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>Active Session Control</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="session-control">
+                                    <button id="start-session-btn" class="btn btn-success">Start New Session for Selected Class</button>
+                                    <button id="end-session-btn" class="btn btn-danger" style="display: none;">End Session</button>
+                                </div>
+                                <div id="active-session-info" class="session-info" style="display: none;">
+                                    <div class="status-indicator active"></div>
+                                    <p>Session Active for <strong id="active-class-name">...</strong> (<span id="active-class-code"></span>)</p>
+                                    <div class="countdown" id="session-countdown">60s remaining</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>Session History</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="session-history-list" class="session-history-scroll">
+                                    <p class="text-muted">No sessions recorded yet.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>Attendance Breakdown (Selected Session)</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Email</th>
+                                            <th>Class</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teacher-attendance-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Sessions -->
+                    <div id="student-sessions" class="dashboard-grid" style="display: none;">
+                        <div class="card col-span-full">
+                            <div class="card-header">
+                                <h3>Live Session scanner</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-4">Click below when your teacher starts a session. Ensure location services are enabled.</p>
+                                <button id="mark-attendance-btn" class="btn btn-success btn-large" disabled>Mark Attendance</button>
+                                <div id="mark-attendance-status" class="mt-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="create-class-modal">
+        <div class="modal-content card">
+            <h2>Create New Class</h2>
+            <form id="create-class-form" class="mt-4">
+                <div class="form-group">
+                    <label for="new-class-name">Class Name</label>
+                    <input type="text" id="new-class-name" required placeholder="e.g. CS101">
+                </div>
+                <div class="form-actions mt-4">
+                    <button type="button" class="btn btn-outline" id="cancel-create-class">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/teacher.js"></script>
+    <script type="module" src="js/student.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+    <script>
+        // Inline routing as requested
+        function showSection(sectionId, navElement) {
+            document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("classesSection").style.display = "none";
+            document.getElementById("sessionsSection").style.display = "none";
+
+            document.getElementById(sectionId).style.display = "block";
+
+            // Update active state carefully
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(navElement) navElement.classList.add('active');
+        }
+        window.showSection = showSection;
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <button class="theme-btn" id="themeToggle" style="position: absolute; top: 20px; right: 20px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow);">
+        <img id="themeIcon" src="assets/sun.svg" alt="theme" width="24" height="24" />
+    </button>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="assets/logo.png" alt="logo" />
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Login to your Smart Attendance account</p>
+            </div>
+            
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                
+                <div id="login-error" class="error-message"></div>
+                <button type="submit">Login</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Signup</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>
