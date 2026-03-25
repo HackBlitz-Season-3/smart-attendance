@@ -204,7 +204,7 @@ function markAttendance() {
                 console.log("Student Location:", sLat, sLon);
                 console.log("Distance (KM):", distance);
                 
-                const threshold = 0.2; // 0.2 km = 200 meters tolerance
+                const threshold = 0.02//0.02 km= 20 meters tolerance
                 let status = "Present";
                 
                 if (distance > threshold) {
